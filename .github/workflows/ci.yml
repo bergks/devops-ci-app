@@ -78,7 +78,7 @@ jobs:
       - name: Build image
         run: docker build --tag "devops-ci-app:${GITHUB_SHA}" .
 
-            - name: Smoke-test container
+      - name: Smoke-test container
         run: |
           set -euo pipefail
           cleanup() {
