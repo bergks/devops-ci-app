@@ -86,13 +86,8 @@ jobs:
             docker rm -f smoke >/dev/null 2>&1 || true
           }
           trap cleanup EXIT
-          
-          # Инициализируем переменную здесь, до запуска контейнера
           ready=0
-          
-          # Убираем ready=0 из конца этой строки
           docker run -d --name smoke -p 127.0.0.1:5000:5000 "devops-ci-app:${GITHUB_SHA}"
-          
           for attempt in {1..15}; do
             if curl --fail --silent --show-error --max-time 2 \
               http://127.0.0.1:5000/health --output health.json; then
@@ -134,7 +129,7 @@ jobs:
           docker push "${IMAGE_NAME}:latest" | tee push-latest.log
           grep -E 'digest: sha256:' push-sha.log push-latest.log
 
-    deploy:
+  deploy:
     needs: image
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: [self-hosted, devops-vm]
