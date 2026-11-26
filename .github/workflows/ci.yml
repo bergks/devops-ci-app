@@ -146,13 +146,18 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: false
+        run: |
+          rm -rf -- source
+          git clone --no-checkout "https://github.com/${GITHUB_REPOSITORY}.git" source
+          git -C source checkout --detach "$GITHUB_SHA"
 
       - name: Deploy with Ansible
-        working-directory: ansible
+        working-directory: source/ansible
         run: ansible-playbook site.yml -e "app_tag=$GITHUB_SHA"
 
       - name: Check through Nginx
         run: curl --fail --show-error --silent "http://$VM_HOST/health"
+
+      - name: Cleanup
+        if: always()
+        run: rm -rf -- source
