@@ -156,7 +156,7 @@ jobs:
         run: ansible-playbook site.yml -e "app_tag=$GITHUB_SHA"
 
       - name: Check through Nginx
-        run: curl --fail --show-error --silent "http://192.168.56.101/health"
+        run: curl --fail --show-error --silent "http://$VM_HOST/health"
 
       - name: Cleanup
         if: always()
